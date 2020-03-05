@@ -15,9 +15,13 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <service
-            android:name=".GPS_Background_Service"
+            android:name=".GPSBackgroundService"
             android:enabled="true"
             android:exported="true"></service>
+        <service
+            android:name=".GPS_Background_Service"
+            android:enabled="true"
+            android:exported="true" />
 
         <activity android:name=".MainActivity">
             <intent-filter>
@@ -26,9 +30,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".GPS_Methods"/>
-        <activity android:name=".GPS_confirm"/>
-        <activity android:name=".GPS_Movement_Service"/>
+        <activity android:name=".GPS_Methods" />
+        <activity android:name=".GPS_confirm" />
+        <activity android:name=".GPS_Movement_Service" />
     </application>
 
 </manifest>

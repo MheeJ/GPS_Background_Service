@@ -41,8 +41,6 @@ public class GPS_Movement_Service extends AppCompatActivity implements View.OnCl
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.gps_movement_service);
-
-
         // Location 제공자에서 정보를 얻어오기(GPS)
         // 1. Location을 사용하기 위한 권한을 얻어와야한다 AndroidManifest.xml
         //     ACCESS_FINE_LOCATION : NETWORK_PROVIDER, GPS_PROVIDER
@@ -54,11 +52,27 @@ public class GPS_Movement_Service extends AppCompatActivity implements View.OnCl
         //    해결방법은
         //     ① 타이머를 설정하여 GPS_PROVIDER 에서 일정시간 응답이 없는 경우 NETWORK_PROVIDER로 전환
         //     ② 혹은, 둘다 한꺼번헤 호출하여 들어오는 값을 사용하는 방식.
-
         initObject();
-        CurrentPosition();
+       CurrentPosition();
     } // end of onCreate
 
+    public void CurrentPosition() {
+        final LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        try {
+            tv.setText("수신중..");
+            // GPS 제공자의 정보가 바뀌면 콜백하도록 리스너 등록하기~!!!
+            lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, // 등록할 위치제공자
+                    100, // 통지사이의 최소 시간간격 (miliSecond)
+                    1, // 통지사이의 최소 변경거리 (m)
+                    mLocationListener);
+            lm.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, // 등록할 위치제공자
+                    100, // 통지사이의 최소 시간간격 (miliSecond)
+                    1, // 통지사이의 최소 변경거리 (m)
+                    mLocationListener);
+            //show_location();
+        } catch (SecurityException ex) {
+        }
+    }
 
     public void initObject() {
         tv = (TextView) findViewById(R.id.my_location);
@@ -69,24 +83,6 @@ public class GPS_Movement_Service extends AppCompatActivity implements View.OnCl
         Go_GPSMethods.setOnClickListener(this);
         longitude_Array = new ArrayList<>();
         latitude_Array = new ArrayList<>();
-    }
-
-    public void CurrentPosition() {
-        final LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        try {
-            tv.setText("수신중..");
-            // GPS 제공자의 정보가 바뀌면 콜백하도록 리스너 등록하기~!!!
-            lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, // 등록할 위치제공자
-                    10, // 통지사이의 최소 시간간격 (miliSecond)
-                    0, // 통지사이의 최소 변경거리 (m)
-                    mLocationListener);
-            lm.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, // 등록할 위치제공자
-                    10, // 통지사이의 최소 시간간격 (miliSecond)
-                    0, // 통지사이의 최소 변경거리 (m)
-                    mLocationListener);
-            //show_location();
-        } catch (SecurityException ex) {
-        }
     }
 
     private final LocationListener mLocationListener = new LocationListener() {
@@ -104,24 +100,25 @@ public class GPS_Movement_Service extends AppCompatActivity implements View.OnCl
             //Network 위치는 Gps에 비해 정확도가 많이 떨어진다.
             show_location();
             tv.setText("위치제공 : " + provider + "\n경도 : " + longitude + "\n위도 : " + latitude + "\n고도 : " + altitude + "\n정확도 : " + accuracy);
-            Toast.makeText(GPS_Movement_Service.this, longitude_str + latitude_str, Toast.LENGTH_LONG).show();
+            Toast.makeText(GPS_Movement_Service.this, "경도 : " + longitude_str + "\n"+ "위도 : "+ latitude_str, Toast.LENGTH_LONG).show();
         }
 
         public void onProviderDisabled(String provider) {
             // Disabled시
             Log.d("test", "onProviderDisabled, provider:" + provider);
         }
-
         public void onProviderEnabled(String provider) {
             // Enabled시
             Log.d("test", "onProviderEnabled, provider:" + provider);
         }
-
         public void onStatusChanged(String provider, int status, Bundle extras) {
             // 변경시
             Log.d("test", "onStatusChanged, provider:" + provider + ", status:" + status + " ,Bundle:" + extras);
         }
     };
+
+
+
 
     public void show_location() {
         longitude_str = String.valueOf(longitude);

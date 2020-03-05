@@ -2,6 +2,8 @@ package com.example.gps_service_final;
 
 import android.app.Service;
 import android.content.Intent;
+import android.location.LocationManager;
+import android.os.Handler;
 import android.os.IBinder;
 import android.app.NotificationManager;
 import android.app.Service;
@@ -13,6 +15,7 @@ import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
 
 public class GPS_Background_Service extends Service {
     Intent intent1;
+    ServiceThread thread;
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -30,16 +33,33 @@ public class GPS_Background_Service extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         // 서비스가 호출될 때마다 실행
-        //  startActivity(intent1);
-        intent1 = new Intent(GPS_Background_Service.this, GPS_Movement_Service.class);
+        myServiceHandler handler = new myServiceHandler();
+        thread = new ServiceThread(handler);
+        thread.start();
+        //return super.onStartCommand(intent,flags,startId);
+        return START_STICKY;
+       /* intent1 = new Intent(GPS_Background_Service.this, GPS_Movement_Service.class);
         //intent2 = new Intent(MyService.this,GPS_Example.class);
         startActivity(intent1.addFlags(FLAG_ACTIVITY_NEW_TASK));
-        return super.onStartCommand(intent,flags,startId);
+        return super.onStartCommand(intent,flags,startId);*/
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-
+        thread.stopForever();
+        thread = null;
     }
+
+    class myServiceHandler extends Handler {
+        @Override
+        public void handleMessage(android.os.Message msg) {
+            Intent intent = new Intent(GPS_Background_Service.this,GPS_Movement_Service.class);
+            startActivity(intent.addFlags(FLAG_ACTIVITY_NEW_TASK));
+            /*intent1 = new Intent(GPS_Background_Service.this, GPS_Movement_Service.class);
+            startActivity(intent1.addFlags(FLAG_ACTIVITY_NEW_TASK));*/
+        }
+    }
+
+
 }

@@ -19,12 +19,12 @@
         android:id="@+id/my_location"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="TextView" />
+        android:text="MyLocation" />
 
     <TextView
-        android:id="@+id/my_location_list"
+        android:id="@+id/gps_address"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="" />
+        android:text="LocationList" />
 
 </LinearLayout>
