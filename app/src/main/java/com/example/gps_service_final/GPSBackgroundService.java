@@ -17,7 +17,6 @@ import android.util.Log;
 import java.util.ArrayList;
 
 public class GPSBackgroundService extends Service {
-    ServiceThread thread;
     public ArrayList<String> longitude_Array;
     public ArrayList<String> latitude_Array;
 
@@ -26,6 +25,7 @@ public class GPSBackgroundService extends Service {
     public double altitude; //고도
     public float accuracy; //정확도
     public String provider; //위치제공자
+    boolean sw = true;
 
     public String longitude_list = null;
     public String latitude_list = null;
@@ -33,7 +33,6 @@ public class GPSBackgroundService extends Service {
     public String latitude_str = null;
     final static String MY_ACTION = "MY_ACTION";
 
-    Handler mHandler = new Handler(Looper.getMainLooper());
 
     public GPSBackgroundService() {
     }
@@ -56,26 +55,9 @@ public class GPSBackgroundService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         // 서비스가 호출될 때마다 실행
-       /* myServiceHandler handler = new myServiceHandler();
-        thread = new ServiceThread(handler);
-        thread.start();*/
-        //return super.onStartCommand(intent,flags,startId);`
         CurrentPosition();
         return super.onStartCommand(intent,flags,startId);
-        /* return START_REDELIVER_INTENT;*/
-        //return START_STICKY;
-       /* intent1 = new Intent(GPS_Background_Service.this, GPS_Movement_Service.class);
-        //intent2 = new Intent(MyService.this,GPS_Example.class);
-        startActivity(intent1.addFlags(FLAG_ACTIVITY_NEW_TASK));
-        return super.onStartCommand(intent,flags,startId);*/
     }
-
-  /*  @Override
-    public void onDestroy() {
-        super.onDestroy();
-        thread.stopForever();
-        thread = null;
-    }*/
 
     public void CurrentPosition() {
         new Thread(new Runnable() {
@@ -84,9 +66,9 @@ public class GPSBackgroundService extends Service {
                 Looper.prepare();
                 final LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
                 // GPS 제공자의 정보가 바뀌면 콜백하도록 리스너 등록하기~!!!
-                if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                }
-                else{
+                if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
+                        checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                } else {
                     lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, // 등록할 위치제공자
                             100, // 통지사이의 최소 시간간격 (miliSecond)
                             1, // 통지사이의 최소 변경거리 (m)
@@ -95,7 +77,7 @@ public class GPSBackgroundService extends Service {
                             100, // 통지사이의 최소 시간간격 (miliSecond)
                             1, // 통지사이의 최소 변경거리 (m)
                             mLocationListener);
-                }
+                        }
                 Looper.loop();
             }
             private final LocationListener mLocationListener = new LocationListener() {
@@ -128,7 +110,6 @@ public class GPSBackgroundService extends Service {
                 }
             };
         }).start();
-        //show_location();
     }
 
 
@@ -146,9 +127,17 @@ public class GPSBackgroundService extends Service {
     public void sendData(){
         Intent intent = new Intent();
         intent.setAction(MY_ACTION);
-        intent.putExtra("ServiceData_longitude",longitude_list);
-        intent.putExtra("ServiceData_latitude",latitude_list);
+        intent.putExtra("ServiceData_longitudeList",longitude_list);
+        intent.putExtra("ServiceData_latitudeList",latitude_list);
         sendBroadcast(intent);
     }
+
+    @Override
+    public void onDestroy(){
+        super.onDestroy();
+    }
+
+
+
 
 }

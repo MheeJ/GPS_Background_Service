@@ -3,17 +3,13 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <Button
-        android:id="@+id/btn_start"
+    <ToggleButton
+        android:id="@+id/trip_onoff"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="btn_strat" />
-
-    <Button
-        android:id="@+id/btn_end"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="btn_end" />
+        android:textOn="여행끝"
+        android:textOff="여행시작"
+        android:text="ToggleButton" />
 
     <TextView
         android:id="@+id/my_location"
@@ -26,5 +22,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="LocationList" />
+
+
 
 </LinearLayout>
